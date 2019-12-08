@@ -3,11 +3,11 @@ wineData <- read.csv("data/regression/winequality-white.csv", sep = ";")
 # define the function to create diagarms for single col lr
 PlotSingleLR <- function(lr, xLable, yLable)
 {
-  pdf(paste("diagrams/regression/", xLable, "_vs_", yLable, "_scatter.pdf", sep = "", collapse = NULL))
+  pdf(paste("diagrams/regression/wine_", xLable, "_vs_", yLable, "_scatter.pdf", sep = "", collapse = NULL))
   plot(wineData[,xLable], wineData[,yLable], pch = 16, cex = 1.3, col = "blue", main = paste(xLable, "VS", yLable, sep = " ", collapse = NULL), xlab = xLable, ylab = yLable)
   abline(lr, col="red", lty=2, lwd=3)
   dev.off()
-  pdf(paste("diagrams/regression/", xLable, "_vs_", yLable, "_hist.pdf", sep = "", collapse = NULL))
+  pdf(paste("diagrams/regression/wine_", xLable, "_vs_", yLable, "_hist.pdf", sep = "", collapse = NULL))
   hist(wineData[,yLable], col="lightblue", main = paste("Histogram of", yLable, sep = " ", collapse = NULL), xlab = xLable)
   dev.off()
   summary(lr)
