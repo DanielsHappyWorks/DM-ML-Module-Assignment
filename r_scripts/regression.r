@@ -1,138 +1,42 @@
-#install.packages("ggplot2")
-library('ggplot2')
-set.seed(1)
 wineData <- read.csv("data/regression/winequality-white.csv", sep = ";")
 
-#Randomise Data Set
-wineDataRand <- wineData[order(runif(4898)), ]
-
-#Using 1/3 data for validation
-wineDataTrain <- wineDataRand[1:2000, ]
-wineDataTest  <- wineDataRand[2001:3000, ]
-
-# define the functions
-RootMeanSquareError <- function(y, h)
+# define the function to create diagarms for single col lr
+PlotSingleLR <- function(lr, xLable, yLable)
 {
-  return(sqrt(mean((y - h) ^ 2)))
+  pdf(paste("diagrams/regression/", xLable, "_vs_", yLable, "_scatter.pdf", sep = "", collapse = NULL))
+  plot(wineData[,xLable], wineData[,yLable], pch = 16, cex = 1.3, col = "blue", main = paste(xLable, "VS", yLable, sep = " ", collapse = NULL), xlab = xLable, ylab = yLable)
+  abline(lr, col="red", lty=2, lwd=3)
+  dev.off()
+  pdf(paste("diagrams/regression/", xLable, "_vs_", yLable, "_hist.pdf", sep = "", collapse = NULL))
+  hist(wineData[,yLable], col="lightblue", main = paste("Histogram of", yLable, sep = " ", collapse = NULL), xlab = xLable)
+  dev.off()
+  summary(lr)
+  return(lr)
 }
+#use function to draw single column linear regression
+a <- PlotSingleLR(lm(quality ~ fixed.acidity, data=wineData), 'quality', 'fixed.acidity')
+b <- PlotSingleLR(lm(quality ~ volatile.acidity, data=wineData), 'quality', 'volatile.acidity')
+c <- PlotSingleLR(lm(quality ~ citric.acid, data=wineData), 'quality', 'citric.acid')
+d <- PlotSingleLR(lm(quality ~ residual.sugar, data=wineData), 'quality', 'residual.sugar')
+e <- PlotSingleLR(lm(quality ~ chlorides, data=wineData), 'quality', 'chlorides')
+f <- PlotSingleLR(lm(quality ~ free.sulfur.dioxide, data=wineData), 'quality', 'free.sulfur.dioxide')
+g <- PlotSingleLR(lm(quality ~ total.sulfur.dioxide, data=wineData), 'quality', 'total.sulfur.dioxide')
+h <- PlotSingleLR(lm(quality ~ density, data=wineData), 'quality', 'density')
+i <- PlotSingleLR(lm(quality ~ pH, data=wineData), 'quality', 'pH')
+j <- PlotSingleLR(lm(quality ~ sulphates, data=wineData), 'quality', 'sulphates')
+k <- PlotSingleLR(lm(quality ~ alcohol, data=wineData), 'quality', 'alcohol')
+anova(a,b,c,d,e,f,g,h,i,j,k)
 
-GetPerfForColTraining <- function(performance, poly.fit, col)
-{
-  performance <- rbind(performance, data.frame(Degree = d,Column = col,Data = 'Training Set', RootMeanSquareError = RootMeanSquareError(wineDataTrain$quality, predict(poly.fit))))
-  performance <- rbind(performance, data.frame(Degree = d, Column = col, Data = 'validation Set', RootMeanSquareError = RootMeanSquareError(wineDataTest$quality, predict(poly.fit, newdata = wineDataTest))))
-  return(performance)
-}
-
-PlotPerfForColTraining <- function(performance, title)
-{
-  ggplot(performance, aes(x = Degree, y = RootMeanSquareError, linetype = Data)) + ggtitle(title) + geom_point() +geom_line()
-}
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(fixed.acidity, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "fixed.acidity")
-}
-PlotPerfForColTraining(performance, "fixed.acidity")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(volatile.acidity, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "volatile.acidity")
-  
-}
-PlotPerfForColTraining(performance, "volatile.acidity")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(citric.acid, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "citric.acid")
-  
-}
-PlotPerfForColTraining(performance, "citric.acid")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(residual.sugar, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "residual.sugar")
-  
-}
-PlotPerfForColTraining(performance, "residual.sugar")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(chlorides, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "chlorides")
-  
-}
-PlotPerfForColTraining(performance, "chlorides")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(free.sulfur.dioxide, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "free.sulfur.dioxide")
-  
-}
-PlotPerfForColTraining(performance, "free.sulfur.dioxide")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(total.sulfur.dioxide, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "total.sulfur.dioxide")
-  
-}
-PlotPerfForColTraining(performance, "total.sulfur.dioxide")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(density, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "density")
-  
-}
-PlotPerfForColTraining(performance, "density")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(pH, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "pH")
-  
-}
-PlotPerfForColTraining(performance, "pH")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(sulphates, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "sulphates")
-  
-}
-PlotPerfForColTraining(performance, "sulphates")
-
-performance <- data.frame()
-for (d in 1:15)
-{
-  poly.fit <- lm(quality ~ poly(alcohol, degree=d), data=wineDataTrain)
-  performance <- GetPerfForColTraining(performance, poly.fit, "alcohol")
-  
-}
-PlotPerfForColTraining(performance, "alcohol")
-
-fitMulti <- lm(quality ~ fixed.acidity + volatile.acidity + citric.acid + residual.sugar + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + density + pH + sulphates + alcohol, data=wineDataTrain)
+#All element linear regression
+fitMulti <- lm(quality ~ fixed.acidity + volatile.acidity + citric.acid + residual.sugar + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + density + pH + sulphates + alcohol, data=wineData)
 summary(fitMulti)
-fitPolyDeg2 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=2, raw=TRUE), data=wineDataTrain)
-summary(fitPolyDeg2)
-fitPolyDeg3 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=3, raw=TRUE), data=wineDataTrain)
-summary(fitPolyDeg3)
-fitPloyDegCustom <- lm(quality ~ poly(fixed.acidity, degree=4) + poly(volatile.acidity, degree=7) + poly(citric.acid, degree=1) + poly(residual.sugar, degree=1) + poly(chlorides, degree=6) + poly(free.sulfur.dioxide, degree=1) + poly(total.sulfur.dioxide, degree=1) + poly(density, degree=3) + poly(pH, degree=2) + poly(sulphates, degree=3) + poly(alcohol, degree=3), data=wineDataTrain)
-summary(fitPloyDegCustom)
 
-anova(fitMulti, fitPolyDeg2, fitPolyDeg3, fitPloyDegCustom)
+#Polinomial regression deg 2
+fitPolyDeg2 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=2), data=wineData)
+summary(fitPolyDeg2)
+
+#Polinomial regression deg 3
+fitPolyDeg3 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=3), data=wineData)
+summary(fitPolyDeg3)
+
+anova(fitMulti, fitPolyDeg2, fitPolyDeg3)
