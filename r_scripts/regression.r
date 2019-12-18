@@ -1,6 +1,6 @@
 #load data set
 wineData <- read.csv("./data/regression/winequality-white.csv", sep = ";")
-#plot(wineData)
+plot(wineData)
 
 # define the function to create diagarms for single col lr
 PlotSingleLR <- function(lr, yLable, xLable)
@@ -16,40 +16,40 @@ PlotSingleLR <- function(lr, yLable, xLable)
 }
 #use function to draw single column linear regression
 a <- PlotSingleLR(lm(quality ~ fixed.acidity, data=wineData), 'quality', 'fixed.acidity')
-#summary(a)
+summary(a)
 b <- PlotSingleLR(lm(quality ~ volatile.acidity, data=wineData), 'quality', 'volatile.acidity')
-#summary(b)
+summary(b)
 c <- PlotSingleLR(lm(quality ~ citric.acid, data=wineData), 'quality', 'citric.acid')
-#summary(c)
+summary(c)
 d <- PlotSingleLR(lm(quality ~ residual.sugar, data=wineData), 'quality', 'residual.sugar')
-#summary(d)
+summary(d)
 e <- PlotSingleLR(lm(quality ~ chlorides, data=wineData), 'quality', 'chlorides')
-#summary(e)
+summary(e)
 f <- PlotSingleLR(lm(quality ~ free.sulfur.dioxide, data=wineData), 'quality', 'free.sulfur.dioxide')
-#summary(f)
+summary(f)
 g <- PlotSingleLR(lm(quality ~ total.sulfur.dioxide, data=wineData), 'quality', 'total.sulfur.dioxide')
-#summary(g)
+summary(g)
 h <- PlotSingleLR(lm(quality ~ density, data=wineData), 'quality', 'density')
-#summary(h)
+summary(h)
 i <- PlotSingleLR(lm(quality ~ pH, data=wineData), 'quality', 'pH')
-#summary(i)
+summary(i)
 j <- PlotSingleLR(lm(quality ~ sulphates, data=wineData), 'quality', 'sulphates')
-#summary(j)
+summary(j)
 k <- PlotSingleLR(lm(quality ~ alcohol, data=wineData), 'quality', 'alcohol')
-#summary(k)
+summary(k)
 anova(a,b,c,d,e,f,g,h,i,j,k)
 
 #All element linear regression
 fitMulti <- lm(quality ~ fixed.acidity + volatile.acidity + citric.acid + residual.sugar + chlorides + free.sulfur.dioxide + total.sulfur.dioxide + density + pH + sulphates + alcohol, data=wineData)
-#summary(fitMulti)
+summary(fitMulti)
 
 #Polinomial regression deg 2
 fitPolyDeg2 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=2), data=wineData)
-#summary(fitPolyDeg2)
+summary(fitPolyDeg2)
 
 #Polinomial regression deg 3
 fitPolyDeg3 <- lm(quality ~ polym(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, degree=3), data=wineData)
-#summary(fitPolyDeg3)
+summary(fitPolyDeg3)
 
 anova(fitMulti, fitPolyDeg2, fitPolyDeg3)
 
