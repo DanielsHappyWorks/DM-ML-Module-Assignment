@@ -1,12 +1,13 @@
-#install class
-#install gmodels
+#install.packages("class")
+#install.packages("gmodels")
+#install.packages("ggplot2")
 library(class)
 library(gmodels)
 library(ggplot2)
 
 #Read the data
 wholesaleData <- read.csv("./data/knn/Wholesale.csv", sep = ",")
-wholesaleData$Channel=factor(ifelse(wholesaleData$Channel==1,'A','B'))
+wholesaleData$Channel=factor(ifelse(wholesaleData$Channel==1,'Horeca','Retail'))
 summary(wholesaleData)
 
 #Plot Graphs
@@ -34,18 +35,18 @@ PlotNumeric("Delicassen")
 
 #Split Training and Testing data/create a random sample for training and test data (2/3)
 set.seed(1)
-wholesaleDataRandom <- wholesaleData[order(runif(439)), ]
+wholesaleDataRandom <- wholesaleData[order(runif(440)), ]
 
 wholesaleDataTrainLables <- wholesaleDataRandom[1:290, "Channel"]
-wholesaleDataTestLables <- wholesaleDataRandom[291:438, "Channel"]
+wholesaleDataTestLables <- wholesaleDataRandom[291:440, "Channel"]
 
 wholesaleDataRandom = wholesaleDataRandom[-1]
 wholesaleDataRandomZ <- scale(wholesaleDataRandom[,1:7])
 
 wholesaleDataTrain <- wholesaleDataRandom[1:290, ]
-wholesaleDataTest  <- wholesaleDataRandom[291:438, ]
+wholesaleDataTest  <- wholesaleDataRandom[291:440, ]
 wholesaleDataTrainZ <- wholesaleDataRandomZ[1:290, ]
-wholesaleDataTestZ  <- wholesaleDataRandomZ[291:438, ]
+wholesaleDataTestZ  <- wholesaleDataRandomZ[291:440, ]
 
 prop.table(table(wholesaleDataTrainLables))
 prop.table(table(wholesaleDataTestLables))
